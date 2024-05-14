@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <div id="profile-info">
+            <h1>TEST</h1>
+        </div>
+        <form id="logout-form" action="/logout" method="POST">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const username = urlParams.get('username');
+
+    fetch(`/profile?username=${username}`)
+        .then(response => response.json()) // Parse della risposta come JSON
+        .then(data => {
+            // Aggiungi il titolo del profilo
+            document.querySelector('.login-container h1').innerText = data.title;
+            // Aggiungi il contenuto del profilo
+            document.getElementById('profile-info').innerHTML = data.content;
+        })
+        .catch(error => {
+            console.error('Errore durante il recupero del profilo:', error);
+            document.getElementById('profile-info').innerHTML = 'Errore nel recupero del profilo';
+        });
+});
+
+    </script>
+</body>
+</html>
