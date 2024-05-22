@@ -8,6 +8,13 @@ const PORT = 3000;
 
 const db = new sqlite3.Database('users.db');
 
+const nunjucks = require('nunjucks');
+app.set("view engine", "html");
+nunjucks.configure(path.join(__dirname, 'public'), {
+    autoescape: true,
+    express: app
+});
+
 // Creazione della tabella utenti se non esiste
 db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS users (id_user INTEGER PRIMARY KEY, username TEXT, password TEXT, birthdate INT, email TEXT)");
@@ -92,7 +99,13 @@ app.get('/profile', (req, res) => {
                 console.error(err.message);
                 res.send('Errore durante il recupero del profilo');
             } else if (row) {
-                res.send(`<h1>Benvenuto, ${username}</h1><p>Credenziali: ${row.username}, ${row.password}</p>`);
+                //res.send(`<h1>Benvenuto, ${username}</h1><p>Credenziali: ${row.username}, ${row.password}</p>`);
+                res.render(
+                    'profile.html', 
+                    { 
+                        user : row,
+                    }
+                );
             } else {
                 res.send('Utente non trovato');
             }
